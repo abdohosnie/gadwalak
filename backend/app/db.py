@@ -1,6 +1,7 @@
 from collections.abc import Generator
 from pathlib import Path
 import sqlite3
+from fastapi import HTTPException
 from .config import load_config
 
 
@@ -24,7 +25,14 @@ def get_connection(db_path: str | Path | None = None) -> sqlite3.Connection:
 
 
 def get_db() -> Generator[sqlite3.Connection, None, None]:
-    connection = get_connection()
+    try:
+        connection = get_connection()
+    except FileNotFoundError as error:
+        raise HTTPException(
+            status_code=503,
+            detail=error
+        )
+    
     try:
         yield connection
     finally:

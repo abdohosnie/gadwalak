@@ -1,18 +1,35 @@
 """HTTP API for student exam schedules."""
 
 from typing import Annotated
+import logging
 import sqlite3
 
 from fastapi import Depends, FastAPI, HTTPException, Path, status
+from fastapi.middleware.cors import CORSMiddleware
 
+from .config import load_config
 from .db import get_db
 from .queries import fetch_courses, fetch_schedule, fetch_student
 from .schemas import StudentScheduleResponse
 
 
-app = FastAPI(title='Gadwalak API')
+config = load_config()
 
+logging.basicConfig(
+    level=config.log_level.upper(),
+    format='%(asctime)s %(levelname)s %(name)s: %(message)s',
+)
 
+app = FastAPI(title='Gadwalak API', debug=config.debug)
+
+if config.cors_origins:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=config.cors_origins,
+        allow_methods=['GET'],
+        allow_headers=['*'],
+    )
+    
 StudentId = Annotated[
     int,
     Path(
