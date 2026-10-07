@@ -1,8 +1,13 @@
 from collections.abc import Generator
+import logging
 from pathlib import Path
 import sqlite3
-from fastapi import HTTPException
-from .config import load_config
+from typing import Annotated
+from fastapi import HTTPException, Depends
+from .config import Config, get_config
+
+
+logger = logging.getLogger(__name__)
 
 
 def get_connection(db_path: str | Path | None = None) -> sqlite3.Connection:
@@ -12,7 +17,7 @@ def get_connection(db_path: str | Path | None = None) -> sqlite3.Connection:
     is used. Each caller owns the returned connection and must close it.
     """
 
-    database_path = str(db_path if db_path is not None else load_config().db_path)
+    database_path = str(db_path)
     db_path = Path(database_path).expanduser()
 
     if not db_path.exists():
@@ -24,15 +29,16 @@ def get_connection(db_path: str | Path | None = None) -> sqlite3.Connection:
     return connection
 
 
-def get_db() -> Generator[sqlite3.Connection, None, None]:
+def get_db(config: Annotated[Config, Depends(get_config)]) -> Generator[sqlite3.Connection, None, None]:
     try:
-        connection = get_connection()
-    except FileNotFoundError as error:
+        connection = get_connection(config.db_path)
+    except FileNotFoundError:
+        logger.exception('Database file is missing: %s', config.db_path)
         raise HTTPException(
             status_code=503,
-            detail=error
+            detail='The database is unavailable.',
         )
-    
+
     try:
         yield connection
     finally:

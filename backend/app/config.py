@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 from dataclasses import dataclass
+from functools import lru_cache
 
 load_dotenv()
 
@@ -19,6 +20,9 @@ def load_config() -> Config:
     conf = Config(db_path=db_path,debug=debug,log_level=log_level,cors_origins=exam_cors_origins)
     return conf
 
+@lru_cache
+def get_config() -> Config:
+    return load_config()
 
 def parse_bool(value: str | bool | None, default: bool = False) -> bool:
     """Parse a boolean environment-variable value.

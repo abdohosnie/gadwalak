@@ -3,22 +3,24 @@
 from typing import Annotated
 import logging
 import sqlite3
+fro
 
 from fastapi import Depends, FastAPI, HTTPException, Path, status
 from fastapi.middleware.cors import CORSMiddleware
 
-from .config import load_config
+from .config import load_config, get_config
 from .db import get_db
 from .queries import fetch_courses, fetch_schedule, fetch_student
 from .schemas import StudentScheduleResponse
 
 
-config = load_config()
+config = get_config()
 
 logging.basicConfig(
     level=config.log_level.upper(),
     format='%(asctime)s %(levelname)s %(name)s: %(message)s',
 )
+logger = logging.getLogger(__name__)
 
 app = FastAPI(title='Gadwalak API', debug=config.debug)
 
@@ -29,7 +31,7 @@ if config.cors_origins:
         allow_methods=['GET'],
         allow_headers=['*'],
     )
-    
+
 StudentId = Annotated[
     int,
     Path(
@@ -53,15 +55,25 @@ def get_student_info(
     """Fetch a student's profile, enrolled courses, and scheduled exams."""
     student_row = fetch_student(connection, student_id)
     if student_row is None:
+        logger.warning('No student found.', student_id)
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='No student was found for this seat number.',
         )
 
+    courses = [dict(course) for course in fetch_courses(connection, student_id)]
+    schedule = [dict(item) for item in fetch_schedule(connection, student_id)]
+    logger.info(
+        'Fetched schedule for seat number %s: %d courses, %d exams',
+        student_id,
+        len(courses),
+        len(schedule),
+    )
+
     return StudentScheduleResponse(
         student=dict(student_row),
-        courses=[dict(course) for course in fetch_courses(connection, student_id)],
-        schedule=[dict(item) for item in fetch_schedule(connection, student_id)],
+        courses=courses,
+        schedule=schedule,
     )
 
 

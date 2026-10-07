@@ -8,7 +8,7 @@ class StudentInfo(BaseModel):
 
     id: int
     full_name: str = Field(min_length=1)
-    level: int | str
+    level: str
     department: str = Field(min_length=1)
 
 
@@ -23,7 +23,7 @@ class ScheduleItem(Course):
     """An exam session assigned to the student."""
 
     scheduled_time: str = Field(min_length=1)
-    duration: int | float | str
+    duration: int 
     location: str = Field(min_length=1)
 
 
