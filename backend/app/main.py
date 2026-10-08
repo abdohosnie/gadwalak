@@ -3,7 +3,6 @@
 from typing import Annotated
 import logging
 import sqlite3
-fro
 
 from fastapi import Depends, FastAPI, HTTPException, Path, status
 from fastapi.middleware.cors import CORSMiddleware
