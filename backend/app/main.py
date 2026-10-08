@@ -35,7 +35,7 @@ StudentId = Annotated[
     int,
     Path(
         gt=0,
-        le=999_999_999,
+        le=999_999_999_999,
         description='The positive student seat number.',
     ),
 ]
@@ -54,7 +54,7 @@ def get_student_info(
     """Fetch a student's profile, enrolled courses, and scheduled exams."""
     student_row = fetch_student(connection, student_id)
     if student_row is None:
-        logger.warning('No student found.', student_id)
+        logger.warning('No student found for seat number %s.', student_id)
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='No student was found for this seat number.',

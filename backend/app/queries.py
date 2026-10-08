@@ -10,7 +10,7 @@ def fetch_student(
     """Return the student associated with a seat number, if present."""
     return connection.execute(
         '''
-        SELECT id, full_name, level, department
+        SELECT seat_number AS id, full_name, level, department
         FROM Students
         WHERE seat_number = ?
         ''',
