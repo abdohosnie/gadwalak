@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Find your registered courses and assigned exam schedule with your Student ID.">
+    <title>Gadwalak</title>
+    <link rel="stylesheet" href="./css/styles.css">
+    <script type="module" src="./js/app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <main id="main-content">
+      <section id="search-screen" aria-labelledby="search-heading">
+        <h1 id="search-heading">Exam schedule</h1>
+        <p>Enter your Student ID to see your exam dates and registered courses.</p>
+
+        <form id="search-form" novalidate>
+          <label for="student-id">Student ID</label>
+          <div class="search-fields">
+            <input
+              id="student-id"
+              name="studentId"
+              type="text"
+              inputmode="numeric"
+              pattern="[0-9]{1,12}"
+              maxlength="12"
+              required
+              autocomplete="off"
+              spellcheck="false"
+              aria-describedby="student-id-hint search-error"
+            >
+            <button id="search-button" type="submit">Search</button>
+          </div>
+          <p id="student-id-hint" class="help-text">Use your student seat number (up to 12 digits).</p>
+          <p id="search-status" role="status"></p>
+          <p id="search-error" class="error-message" role="alert"></p>
+        </form>
+      </section>
+
+      <section id="results-screen" aria-label="Student schedule" hidden>
+        <section aria-labelledby="student-heading">
+          <h2 id="student-heading" tabindex="-1">Student information</h2>
+          <dl id="student-details" class="student-details"></dl>
+        </section>
+
+        <section aria-labelledby="exams-heading">
+          <div class="section-heading">
+            <h2 id="exams-heading">Assigned exams <span id="exam-count"></span></h2>
+            <fieldset id="view-controls" class="view-controls">
+              <legend>View exams</legend>
+              <label><input type="radio" name="exam-view" value="list" checked> List</label>
+              <label><input type="radio" name="exam-view" value="calendar"> Calendar</label>
+            </fieldset>
+          </div>
+          <p id="no-exams" hidden>No exams have been assigned to you yet.</p>
+
+          <div id="list-view">
+            <ol id="exam-list" class="exam-list" aria-label="Assigned exams"></ol>
+          </div>
+
+          <div id="calendar-view" hidden>
+            <div id="calendar-dated">
+              <div class="calendar-navigation" role="group" aria-label="Calendar navigation">
+                <button id="previous-month" type="button" aria-label="Previous month">Previous</button>
+                <span id="month-label" aria-live="polite" aria-atomic="true"></span>
+                <button id="next-month" type="button" aria-label="Next month">Next</button>
+              </div>
+              <p id="calendar-help" class="help-text">Choose a day to see full exam details. Days with exams show an exam count.</p>
+              <table class="calendar" aria-describedby="calendar-help">
+                <caption id="calendar-caption" class="visually-hidden"></caption>
+                <thead>
+                  <tr>
+                    <th scope="col"><abbr title="Sunday">Sun</abbr></th>
+                    <th scope="col"><abbr title="Monday">Mon</abbr></th>
+                    <th scope="col"><abbr title="Tuesday">Tue</abbr></th>
+                    <th scope="col"><abbr title="Wednesday">Wed</abbr></th>
+                    <th scope="col"><abbr title="Thursday">Thu</abbr></th>
+                    <th scope="col"><abbr title="Friday">Fri</abbr></th>
+                    <th scope="col"><abbr title="Saturday">Sat</abbr></th>
+                  </tr>
+                </thead>
+                <tbody id="calendar-days"></tbody>
+              </table>
+
+              <h3 id="selected-day-heading" aria-live="polite" aria-atomic="true"></h3>
+              <p id="no-day-exams" hidden>No exams on this day.</p>
+              <ol id="day-exam-list" class="exam-list" aria-labelledby="selected-day-heading"></ol>
+            </div>
+
+            <section id="undated-exams" aria-labelledby="undated-heading" hidden>
+              <h3 id="undated-heading">Exams with an unrecognized date</h3>
+              <p>These exams could not be placed on the calendar. Their scheduled times are shown below.</p>
+              <ol id="undated-exam-list" class="exam-list" aria-labelledby="undated-heading"></ol>
+            </section>
+          </div>
+        </section>
+
+        <section aria-labelledby="courses-heading">
+          <h2 id="courses-heading">Registered courses <span id="course-count"></span></h2>
+          <p id="no-courses" hidden>No registered courses were found.</p>
+          <ul id="course-list" class="course-list"></ul>
+        </section>
+        <p><button id="search-again" type="button">Search another student ID</button></p>
+      </section>
+
+      <noscript><p>JavaScript is required to search for your exam schedule. Please enable it and reload this page.</p></noscript>
+    </main>
+  </body>
+</html>

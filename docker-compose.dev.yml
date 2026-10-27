@@ -1,4 +1,4 @@
-# Development overrides, loaded automatically by `docker compose up`.
+# Development overrides. Combine with docker-compose.yml using `-f` flags.
 # Live-mounts the source and runs uvicorn with auto-reload.
 services:
   backend:

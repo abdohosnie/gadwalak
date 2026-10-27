@@ -2,58 +2,64 @@
 
 ## Project Structure & Module Organization
 
-Gadwalak is an exam-scheduling application with a React frontend and a Python
-backend. Keep browser code in `frontend/src/`: `App.tsx` is the root component,
-`main.tsx` is the entry point, and `assets/` and `public/` contain static
-resources. Keep backend application code in `backend/app/`; configuration lives
-in `backend/app/config.py` and dependencies in `backend/requirements.txt`.
-
-Repository-level deployment placeholders are `docker-compose.yml`,
-`frontend/Dockerfile`, `backend/Dockerfile`, and `nginx/Dockerfile`. Add service
-configuration there when container support is implemented. Copy `.env.example`
-for local environment settings; never commit secrets or a populated `.env`.
+Gadwalak helps Ain Shams University students find their exam schedules. The
+frontend is plain HTML, CSS, and JavaScript, with no package manager or build
+step. Keep the page entry point in `nginx/frontend/index.html`, stylesheets in
+`nginx/frontend/css/`, browser scripts in `nginx/frontend/js/`, and tests in
+`nginx/frontend/tests/`. Nginx configuration and its Dockerfile belong in
+`nginx/`. Keep backend application code in `backend/app/`, configuration in
+`backend/app/config.py`, and dependencies in `backend/requirements.txt`.
+Compose service definitions live in `docker-compose.yml`; optional local
+development overrides live in `docker-compose.dev.yml`. The backend reads
+`data/scheduler.db` through the mounted `/srv/data` directory. Database files
+and populated `.env` files must not be committed.
 
 ## Build, Test, and Development Commands
 
-Run frontend commands from `frontend/`:
+Run the full stack from the repository root:
 
 ```bash
-npm install       # install pinned frontend dependencies
-npm run dev       # start the Vite development server
-npm run build     # type-check and create a production build in dist/
-npm run lint      # run ESLint on TypeScript and React files
-npm run preview   # serve the production build locally
+docker compose up --build
 ```
 
-For the backend, create and activate a virtual environment, install
-`backend/requirements.txt`, then run FastAPI with Uvicorn once an application
-entry point is available, for example `uvicorn app.main:app --reload` from
-`backend/`.
+To enable Uvicorn reload and mount backend source during development, include
+the dev file explicitly:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+```
+
+The frontend has no build step. Its JavaScript tests use Node's built-in test
+runner:
+
+```bash
+node --test nginx/frontend/tests/*.test.mjs
+```
+
+For direct backend development, install `backend/requirements.txt` in a
+virtual environment and run `uvicorn app.main:app --reload` from `backend/`.
+Provide `data/scheduler.db` before testing schedule lookups.
 
 ## Coding Style & Naming Conventions
 
-Use TypeScript and React function components in the frontend. Follow the
-existing two-space indentation, single quotes, and semicolon-free style. Use
-PascalCase for components (`ExamSchedule.tsx`), camelCase for functions and
-state, and descriptive CSS class names. Run `npm run lint` before sharing
-frontend changes; ESLint is the configured formatter-quality gate.
-
-Use Python's four-space indentation, `snake_case` functions and variables, and
-PascalCase classes in the backend. Add type annotations for new public helpers
-and keep configuration keys aligned with the `EXAM_` variables in
-`.env.example`.
+Use semantic HTML, two-space indentation, lowercase kebab-case filenames, and
+descriptive CSS class names. Keep JavaScript in plain browser modules and use
+camelCase for functions and variables. Use Python's four-space indentation,
+`snake_case` functions and variables, and PascalCase classes in the backend.
+Add type annotations for new public Python helpers and keep configuration
+keys aligned with the `EXAM_` variables in `.env.example`.
 
 ## Testing Guidelines
 
-No automated test framework is configured yet. At minimum, run `npm run lint`
-and `npm run build` for frontend changes. For backend changes, run a focused
-import or compile check, such as `python3 -m py_compile app/config.py` from
-`backend/`. When adding tests, place them beside the relevant area in a
-`tests/` directory and name them `test_*.py` or `*.test.tsx`.
+For frontend behavior changes, run the Node tests and check the relevant
+interactions through Nginx. For backend changes, run a focused import or
+compile check, such as `python3 -m py_compile app/config.py` from `backend/`.
+When Compose or Nginx files change, check the resolved configuration with
+`docker compose config` and verify the image build paths.
 
 ## Commit & Pull Request Guidelines
 
-The repository has no commit history, so use concise imperative commit subjects,
-such as `Add exam schedule form`. Keep each commit focused. Pull requests should
-explain the user-visible change, list validation commands, link the related
-issue when present, and include screenshots for frontend visual changes.
+Use concise imperative commit subjects, such as `Add exam schedule lookup`.
+Keep each commit focused. Pull requests should explain the user-visible
+change, list validation steps, link the related issue when present, and include
+screenshots for frontend visual changes.
