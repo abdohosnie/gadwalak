@@ -1,6 +1,7 @@
-# =========================================================
-# Node / Vite
-# =========================================================
+# Next.js
+.next/
+out/
+next-env.d.ts
 
 # Dependencies
 node_modules/
@@ -15,145 +16,24 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-lerna-debug.log*
 
-# Vite
-vite.config.*.timestamp-*
-
-
-# =========================================================
 # Environment / Secrets
-# =========================================================
-
 .env
 .env.local
 .env.*
 .env.*.local
-
-# Keep example environment files
 !.env.example
-
-
-# =========================================================
-# Codex
-# =========================================================
-
-.codex/
-.codex-*
-*.codex
-codex/
-
-
-# =========================================================
-# AI agents
-# =========================================================
-
-.claude/
-.agents/
-.cursor/
-.windsurf/
-.gemini/
-.continue/
-.cline/
-.roo/
-.aider*
-
-
-# =========================================================
-# Python
-# =========================================================
-
-# Byte-compiled / optimized
-__pycache__/
-*.py[cod]
-*$py.class
-
-# C extensions
-*.so
-
-# Distribution / packaging
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-pip-wheel-metadata/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# Virtual environments
-.venv/
-venv/
-env/
-ENV/
-
-# Python test / coverage
-.pytest_cache/
-.coverage
-.coverage.*
-coverage.xml
-htmlcov/
-.tox/
-.nox/
-.cache/
-hypothesis/
-
-# Type checkers / linters
-.mypy_cache/
-.dmypy.json
-dmypy.json
-.pyre/
-.ruff_cache/
-
-# Jupyter Notebook
-.ipynb_checkpoints/
-
-# Python version managers
-.python-version
-
-# PDM
-.pdm.toml
-.pdm-python
-__pypackages__/
 
 # Local SQLite databases
 *.db*
 *.sqlite*
+!data/.gitkeep
 
-
-# =========================================================
-# Editors / IDEs
-# =========================================================
-
+# IDEs & OS
 .vscode/*
 !.vscode/extensions.json
-
 .idea/
-*.iml
-
-# Visual Studio
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-
-# =========================================================
-# OS
-# =========================================================
-
 .DS_Store
 Thumbs.db
-
-# TypeScript incremental-build state
 *.tsbuildinfo
+.pytest_cache/

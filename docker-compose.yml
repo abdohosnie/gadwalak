@@ -1,17 +1,13 @@
 services:
-  backend:
+  web:
     build:
-      context: ./backend
+      context: .
       dockerfile: Dockerfile
-    volumes:
-    - ./data:/srv/data
-    environment:
-      EXAM_DB_PATH: /srv/data/scheduler.db
-  nginx:
-    build:
-      context: ./nginx
     ports:
-      - "8080:80"
-    depends_on:
-      - backend
+      - "3000:3000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      EXAM_DB_PATH: /app/data/scheduler.db
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
     restart: unless-stopped
